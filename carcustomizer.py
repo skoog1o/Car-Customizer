@@ -1,129 +1,132 @@
 # car-customizer.py
-# Define car brands, models, trims, and years
-brands = ('Porsche', 'BMW', 'Audi', 'Mercedes')
-porsche_years = [2012, 2016, 2022, 2025]
-bmw_years = [2018, 2023, 2025]
-audi_years = [2015, 2020, 2024]
-mercedes_years = [2015, 2022, 2023]
+from abc import ABC, abstractmethod
 
-#porsche models and trims
-models_porsche = ['911', 'Cayman', 'Panamera']
-trims_porsche = ['Base', 'S', 'GTS',]
+# Abstract Car class (Abstraction)
+class Car(ABC):
+    def __init__(self, brand, model, trim, year):
+        self._brand = brand          # Encapsulation (protected attribute)
+        self._model = model
+        self._trim = trim
+        self._year = year
+        self._wheels = None
+        self._color = None
+        self._cosmetics = []
 
-#bmw models and trims
-models_bmw = ['M3', 'M4', 'M5']
-trims_bmw = ['Base', 'Competition', 'CS']
+    @abstractmethod
+    def display_info(self):
+        pass
 
-#audi models and trims
-models_audi = ['RS3', 'RS6', 'R8']
-audi_trims = ['Base', 'Performance', 'V10']
+    # Getter and setter for wheels (Encapsulation)
+    def set_wheels(self, size, brand):
+        self._wheels = f"{size} ({brand})"
+    
+    def get_wheels(self):
+        return self._wheels
+    
+    def set_color(self, color):
+        self._color = color
 
-#mercedes models and trims
-models_mercedes = ['C63', 'SL63', 'GT63']
-trims_mercedes = ['Base', 'S', ]
+    def get_color(self):
+        return self._color
 
-#wheel options
+    def add_cosmetic(self, cosmetic):
+        self._cosmetics.append(cosmetic)
+
+    def get_cosmetics(self):
+        return self._cosmetics
+
+
+# Inheritance: Brand-specific classes
+class Porsche(Car):
+    def display_info(self):  # Polymorphism: overriding abstract method
+        print(f"Porsche {self._model} {self._trim} ({self._year})")
+        print(f"Color: {self._color}")
+        print(f"Wheels: {self._wheels}")
+        print(f"Cosmetic Options: {self._cosmetics}")
+
+class BMW(Car):
+    def display_info(self):
+        print(f"BMW {self._model} {self._trim} ({self._year})")
+        print(f"Color: {self._color}")
+        print(f"Wheels: {self._wheels}")
+        print(f"Cosmetic Options: {self._cosmetics}")
+
+class Audi(Car):
+    def display_info(self):
+        print(f"Audi {self._model} {self._trim} ({self._year})")
+        print(f"Color: {self._color}")
+        print(f"Wheels: {self._wheels}")
+        print(f"Cosmetic Options: {self._cosmetics}")
+
+class Mercedes(Car):
+    def display_info(self):
+        print(f"Mercedes {self._model} {self._trim} ({self._year})")
+        print(f"Color: {self._color}")
+        print(f"Wheels: {self._wheels}")
+        print(f"Cosmetic Options: {self._cosmetics}")
+
+
+# Brand options
+brands = {
+    '1': ('Porsche', Porsche, ['911', 'Cayman', 'Panamera'], ['Base', 'S', 'GTS'], [2012, 2016, 2022, 2025]),
+    '2': ('BMW', BMW, ['M3', 'M4', 'M5'], ['Base', 'Competition', 'CS'], [2018, 2023, 2025]),
+    '3': ('Audi', Audi, ['RS3', 'RS6', 'R8'], ['Base', 'Performance', 'V10'], [2015, 2020, 2024]),
+    '4': ('Mercedes', Mercedes, ['C63', 'SL63', 'GT63'], ['Base', 'S'], [2015, 2022, 2023])
+}
+
 wheel_options = ['18-inch', '19-inch', '20-inch', '21-inch']
-wheel_brand = ['OEM', 'Volk Racing', 'BBS', 'HRE']
+wheel_brands = ['OEM', 'Volk Racing', 'BBS', 'HRE']
 color_options = ['Red', 'Blue', 'Black', 'White', 'Silver', 'Yellow']
-
-# cosmetic options
 cosmetic_options = ['Spoiler', 'Body Kit', 'Tinted Windows', 'Custom Paint']
 paint_colors = ['Matte Black', 'Ruby Star Pink', 'Metallic Blue', 'Pearl Red']
 
-# Function to display options and get user selection
+# User selects brand
 choice1 = input("Welcome to the Car Customizer!\nSelect a brand:\n1. Porsche\n2. BMW\n3. Audi\n4. Mercedes\nEnter the number of your choice: ")
-
-if choice1 == '1':
-    brand = 'Porsche'
-    models = models_porsche
-    trims = trims_porsche  
-    years = porsche_years
-elif choice1 == '2':
-    brand = 'BMW'
-    models = models_bmw
-    trims = trims_bmw
-    years = bmw_years
-elif choice1 == '3':
-    brand = 'Audi'
-    models = models_audi
-    trims = audi_trims
-    years = audi_years
-elif choice1 == '4':
-    brand = 'Mercedes'
-    models = models_mercedes
-    trims = trims_mercedes
-    years = mercedes_years
-else:
+if choice1 not in brands:
     print("Invalid choice. Exiting.")
     exit()
 
-# Model selection
-print("Select a model:")
-for idx, model in enumerate(models, 1):
-    print(f"{idx}. {model}")
-model_choice = input("Enter the number of your choice: ")
-selected_model = models[int(model_choice)-1] if model_choice.isdigit() and 1 <= int(model_choice) <= len(models) else None
+brand_name, brand_class, models, trims, years = brands[choice1]
 
-# Trim selection
-print("Select a trim:")
-for idx, trim in enumerate(trims, 1):
-    print(f"{idx}. {trim}")
-trim_choice = input("Enter the number of your choice: ")
-selected_trim = trims[int(trim_choice)-1] if trim_choice.isdigit() and 1 <= int(trim_choice) <= len(trims) else None
+# Model, Trim, Year selection
+def select_option(options, prompt):
+    print(prompt)
+    for idx, option in enumerate(options, 1):
+        print(f"{idx}. {option}")
+    choice = input("Enter the number of your choice: ")
+    return options[int(choice)-1] if choice.isdigit() and 1 <= int(choice) <= len(options) else None
 
-# Year selection
-print("Select a year:")
-for idx, year in enumerate(years, 1):
-    print(f"{idx}. {year}")
-year_choice = input("Enter the number of your choice: ")
-selected_year = years[int(year_choice)-1] if year_choice.isdigit() and 1 <= int(year_choice) <= len(years) else None
+selected_model = select_option(models, "Select a model:")
+selected_trim = select_option(trims, "Select a trim:")
+selected_year = select_option(years, "Select a year:")
 
-# Wheel selection
-print("Select a wheel size:")
-for idx, wheel in enumerate(wheel_options, 1):
-    print(f"{idx}. {wheel}")
-wheel_choice = input("Enter the number of your choice: ")
-selected_wheel = wheel_options[int(wheel_choice)-1] if wheel_choice.isdigit() and 1 <= int(wheel_choice) <= len(wheel_options) else None
+# Create car instance (polymorphic behavior via parent class)
+car = brand_class(brand_name, selected_model, selected_trim, selected_year)
 
-print("Select a wheel brand:")
-for idx, wbrand in enumerate(wheel_brand, 1):
-    print(f"{idx}. {wbrand}")
-wbrand_choice = input("Enter the number of your choice: ")
-selected_wbrand = wheel_brand[int(wbrand_choice)-1] if wbrand_choice.isdigit() and 1 <= int(wbrand_choice) <= len(wheel_brand) else None
+# Wheels
+selected_wheel = select_option(wheel_options, "Select a wheel size:")
+selected_wbrand = select_option(wheel_brands, "Select a wheel brand:")
+car.set_wheels(selected_wheel, selected_wbrand)
 
-# Color selection
-print("Select a color:")
-for idx, color in enumerate(color_options, 1):
-    print(f"{idx}. {color}")
-color_choice = input("Enter the number of your choice: ")
-selected_color = color_options[int(color_choice)-1] if color_choice.isdigit() and 1 <= int(color_choice) <= len(color_options) else None
+# Color
+selected_color = select_option(color_options, "Select a color:")
+car.set_color(selected_color)
 
-# Cosmetic options (multiple selection)
+# Cosmetic options
 print("Available cosmetic options:")
 for idx, option in enumerate(cosmetic_options, 1):
     print(f"{idx}. {option}")
 selected = input("Enter the numbers of the cosmetic options you want (separated by commas): ")
 selected_indices = [int(x.strip()) for x in selected.split(",") if x.strip().isdigit()]
-chosen_cosmetics = [cosmetic_options[i-1] for i in selected_indices if 1 <= i <= len(cosmetic_options)]
+for i in selected_indices:
+    if 1 <= i <= len(cosmetic_options):
+        car.add_cosmetic(cosmetic_options[i-1])
 
-chosen_paint = None
-if 'Custom Paint' in chosen_cosmetics:
-    print("Available paint colors:")
-    for idx, paint in enumerate(paint_colors, 1):
-        print(f"{idx}. {paint}")
-    paint_choice = input("Enter the number of the paint color you want: ")
-    if paint_choice.isdigit() and 1 <= int(paint_choice) <= len(paint_colors):
-        chosen_paint = paint_colors[int(paint_choice)-1]
+# Custom paint
+if 'Custom Paint' in car.get_cosmetics():
+    chosen_paint = select_option(paint_colors, "Select a custom paint color:")
+    car.add_cosmetic(f"Custom Paint: {chosen_paint}")
 
 # Show summary
 print("\nYour selections:")
-print(f"Brand: {brand}")
-print(f"Model: {selected_model}")
-print(f"Trim: {selected_trim}")
-print(f"Year: {selected_year}")
-print(f"Wheel: {selected_wheel} ({selected_wbrand})")
-print(f"Color: {selected_color}")
-print(f"Cosmetic options: {chosen_cosmetics}")
-if chosen_paint:
-    print(f"Custom Paint Color: {chosen_paint}")
+car.display_info()
